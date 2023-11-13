@@ -15,8 +15,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Model = new MainViewModel();
-        DataContext = Model;
     }
     private void MainWindow_OnClosing(object sender, CancelEventArgs e)
     {

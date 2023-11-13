@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Configuration;
 using System.Speech.Recognition;
-using System.Speech.Synthesis;
-using static System.Net.Mime.MediaTypeNames;
+using JaaS.Models;
+using Microsoft.CognitiveServices.Speech;
 
 namespace JaaS;
 
 public class MainViewModel : ViewModelBase
 {
-    private SpeechRecognitionEngine _recognizer;
-    private SpeechSynthesizer _synthesizer;
+    private SpeechRecognitionEngine _basicRecognizer;
+    private AppConfiguration _configuration;
+    private Microsoft.CognitiveServices.Speech.SpeechRecognizer _speechRecognizerAzure;
+    private System.Speech.Synthesis.SpeechSynthesizer _basicSynthesizer;
+    
 
     private string? _recognizedText;
     public string? ResponseText
@@ -21,10 +25,12 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public MainViewModel()
+    public MainViewModel(AppConfiguration configuration)
     {
-        _recognizer = new SpeechRecognitionEngine();
-        _synthesizer = new SpeechSynthesizer();
+        _configuration = configuration;
+        _basicRecognizer = new SpeechRecognitionEngine();
+        _basicSynthesizer = new System.Speech.Synthesis.SpeechSynthesizer();
+        //_speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(SpeechConfig.FromSubscription(configuration.SpeechSubscriptionKey, configuration.SpeechRegion));
         _recognizedText = string.Empty;
         InitialiseRecognitionEngine();
         InitialiseSpeechSynthesiserEngine();
@@ -32,38 +38,38 @@ public class MainViewModel : ViewModelBase
 
     public void Dispose()
     {
-        if (_recognizer != null)
-            _recognizer.Dispose();
+        if (_basicRecognizer != null)
+            _basicRecognizer.Dispose();
     }
     private void InitialiseSpeechSynthesiserEngine()
     {
-        _synthesizer.SetOutputToDefaultAudioDevice(); // Set output to speakers
+        _basicSynthesizer.SetOutputToDefaultAudioDevice();
     }
 
     private void InitialiseRecognitionEngine()
     {
-        _recognizer.SetInputToDefaultAudioDevice();
+        _basicRecognizer.SetInputToDefaultAudioDevice();
         GrammarBuilder builder = new GrammarBuilder();
         builder.Append("Hello");
-        _recognizer.LoadGrammar(new Grammar(builder));
+        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("Jars");
-        _recognizer.LoadGrammar(new Grammar(builder));
+        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("Close");
-        _recognizer.LoadGrammar(new Grammar(builder));
+        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("sponsor");
-        _recognizer.LoadGrammar(new Grammar(builder));
+        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("next event");
-        _recognizer.LoadGrammar(new Grammar(builder));
+        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("Open the pod bay doors");
-        _recognizer.LoadGrammar(new Grammar(builder));
-        _recognizer.BabbleTimeout = TimeSpan.FromSeconds(3);
-        _recognizer.InitialSilenceTimeout = TimeSpan.FromSeconds(3);
-        _recognizer.RecognizeCompleted += RecognizeCompleted;
+        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        _basicRecognizer.BabbleTimeout = TimeSpan.FromSeconds(3);
+        _basicRecognizer.InitialSilenceTimeout = TimeSpan.FromSeconds(3);
+        _basicRecognizer.RecognizeCompleted += RecognizeCompleted;
 
     }
 
@@ -99,7 +105,7 @@ public class MainViewModel : ViewModelBase
                     speakResult = false;
                     break;
             }
-            if (speakResult && e.Result.Confidence > 0.7) _synthesizer.SpeakAsync(responseText);
+            if (speakResult && e.Result.Confidence > 0.7) _basicSynthesizer.SpeakAsync(responseText);
             ResponseText = responseText;
         }
         else
@@ -109,7 +115,7 @@ public class MainViewModel : ViewModelBase
     public void ActivateRecognition()
     {
         ResponseText = string.Empty;
-        _recognizer.RecognizeAsync();
+        _basicRecognizer.RecognizeAsync();
     }
     public event Action RequestClose;
     public virtual void Close()
