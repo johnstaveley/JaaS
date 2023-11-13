@@ -10,6 +10,8 @@
         <Label Background="Black" Foreground="White" Content="JaaS" HorizontalAlignment="Center" Margin="0,0,0,350" FontSize="32" ></Label>
         <Image Grid.Row="1" Source="hal.png" Margin="50,0,50,50" ></Image>
         <Button Grid.Row="4" Width="100" Height="30" FontSize="16" Content="Activate" Click="Activate_Click" />
-        <TextBox Grid.Row="5" Grid.Column="1" BorderThickness="0" Background="Black" Foreground="Gray" VerticalAlignment="Bottom" Margin="0,0" Width="Auto" Height="25" FontSize="16" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" Text="{Binding RecognizedText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Row="5" Grid.Column="1" BorderThickness="0" Background="Black" Foreground="Gray" VerticalAlignment="Bottom" 
+                 Margin="0,0" Width="Auto" Height="35" FontSize="12" TextAlignment="Justify" VerticalScrollBarVisibility="Auto" 
+                 TextWrapping="Wrap" Text="{Binding ResponseText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
     </StackPanel>
 </Window>
