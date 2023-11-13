@@ -5,10 +5,17 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>images\R.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="hal.png" />
+    <None Remove="images\hal.png" />
+    <None Remove="images\R.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="images\R.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,9 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="hal.png">
+    <Resource Include="images\hal.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
