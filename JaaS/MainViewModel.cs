@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Speech.Recognition;
 using JaaS.Models;
 using Microsoft.CognitiveServices.Speech;
@@ -45,6 +46,12 @@ public class MainViewModel : ViewModelBase
     private void InitialiseSpeechSynthesiserEngine()
     {
         _basicSynthesizer.SetOutputToDefaultAudioDevice();
+        _basicSynthesizer.Rate = -2;
+        var installedVoices = _basicSynthesizer.GetInstalledVoices().ToList();
+        var chosenVoice = installedVoices.FirstOrDefault(x => x.VoiceInfo.Name == "Microsoft David Desktop");
+        if (chosenVoice != null) {
+            _basicSynthesizer.SelectVoice(chosenVoice.VoiceInfo.Name);
+        }
     }
 
     private void InitialiseRecognitionEngine()
