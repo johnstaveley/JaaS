@@ -1,9 +1,8 @@
-﻿using System;
-using System.Configuration;
+﻿using JaaS.Models;
+using Microsoft.CognitiveServices.Speech;
+using System;
 using System.Linq;
 using System.Speech.Recognition;
-using JaaS.Models;
-using Microsoft.CognitiveServices.Speech;
 
 namespace JaaS;
 
@@ -88,6 +87,9 @@ public class MainViewModel : ViewModelBase
         builder.Append("next event");
         _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
+        builder.Append("next month");
+        _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        builder = new GrammarBuilder();
         builder.Append("Open the pod bay doors");
         _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         _speechRecognizerWindows.BabbleTimeout = TimeSpan.FromSeconds(3);
@@ -118,7 +120,8 @@ public class MainViewModel : ViewModelBase
                     responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains.";
                     break;
                 case "next event":
-                    responseText = "The next event is on the 25th of Jaunary by Michael Gray talking about what is the role of a principal engineer.";
+                case "next month":
+                    responseText = "The next event is on the 25th of January by Michael Gray. He will be talking about what is the role of a principal engineer.";
                     break;
                 case "Open the pod bay doors":
                     responseText = "I'm sorry Dave. I'm afraid I can't do that.";
