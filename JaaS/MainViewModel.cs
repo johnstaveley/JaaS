@@ -9,11 +9,11 @@ namespace JaaS;
 
 public class MainViewModel : ViewModelBase
 {
-    private SpeechRecognitionEngine _basicRecognizer;
+    private SpeechRecognitionEngine? _speechRecognizerWindows;
     private AppConfiguration _configuration;
-    private Microsoft.CognitiveServices.Speech.SpeechRecognizer _speechRecognizerAzure;
-    private System.Speech.Synthesis.SpeechSynthesizer _basicSynthesizer;
-    
+    private Microsoft.CognitiveServices.Speech.SpeechRecognizer? _speechRecognizerAzure;
+    private System.Speech.Synthesis.SpeechSynthesizer? _speechSynthesizerWindows;
+
 
     private string? _recognizedText;
     public string? ResponseText
@@ -29,55 +29,70 @@ public class MainViewModel : ViewModelBase
     public MainViewModel(AppConfiguration configuration)
     {
         _configuration = configuration;
-        _basicRecognizer = new SpeechRecognitionEngine();
-        _basicSynthesizer = new System.Speech.Synthesis.SpeechSynthesizer();
-        var azureSpeechConfig = SpeechConfig.FromSubscription(configuration.SpeechSubscriptionKey, configuration.SpeechRegion);
-//        _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig);
+        if (configuration.SpeechRecognizerStrategy == SpeechStrategyKind.Windows)
+        {
+            _speechRecognizerAzure = null;
+            _speechRecognizerWindows = new SpeechRecognitionEngine();
+            InitialiseWindowsRecognitionEngine();
+        }
+        else
+        {
+            var azureSpeechConfig = SpeechConfig.FromSubscription(configuration.AzureSpeechSubscriptionKey, configuration.AzureSpeechRegion);
+            _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig);
+        }
+        if (_configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Windows) {
+            _speechSynthesizerWindows = new System.Speech.Synthesis.SpeechSynthesizer();
+            InitialiseWindowsSpeechSynthesiserEngine();
+        }
         _recognizedText = string.Empty;
-        InitialiseRecognitionEngine();
-        InitialiseSpeechSynthesiserEngine();
     }
 
     public void Dispose()
     {
-        if (_basicRecognizer != null)
-            _basicRecognizer.Dispose();
+        if (_speechRecognizerWindows != null)
+            _speechRecognizerWindows.Dispose();
+        if (_speechRecognizerAzure!= null)
+            _speechRecognizerAzure.Dispose();
+        if (_speechSynthesizerWindows != null)
+            _speechSynthesizerWindows.Dispose();
+
     }
-    private void InitialiseSpeechSynthesiserEngine()
+    private void InitialiseWindowsSpeechSynthesiserEngine()
     {
-        _basicSynthesizer.SetOutputToDefaultAudioDevice();
-        _basicSynthesizer.Rate = -2;
-        var installedVoices = _basicSynthesizer.GetInstalledVoices().ToList();
+        _speechSynthesizerWindows.SetOutputToDefaultAudioDevice();
+        _speechSynthesizerWindows.Rate = -2;
+        var installedVoices = _speechSynthesizerWindows.GetInstalledVoices().ToList();
         var chosenVoice = installedVoices.FirstOrDefault(x => x.VoiceInfo.Name == "Microsoft David Desktop");
-        if (chosenVoice != null) {
-            _basicSynthesizer.SelectVoice(chosenVoice.VoiceInfo.Name);
+        if (chosenVoice != null)
+        {
+            _speechSynthesizerWindows.SelectVoice(chosenVoice.VoiceInfo.Name);
         }
     }
 
-    private void InitialiseRecognitionEngine()
+    private void InitialiseWindowsRecognitionEngine()
     {
-        _basicRecognizer.SetInputToDefaultAudioDevice();
+        _speechRecognizerWindows.SetInputToDefaultAudioDevice();
         GrammarBuilder builder = new GrammarBuilder();
         builder.Append("Hello");
-        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("Jars");
-        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("Close");
-        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("sponsor");
-        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("next event");
-        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         builder = new GrammarBuilder();
         builder.Append("Open the pod bay doors");
-        _basicRecognizer.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
-        _basicRecognizer.BabbleTimeout = TimeSpan.FromSeconds(3);
-        _basicRecognizer.InitialSilenceTimeout = TimeSpan.FromSeconds(3);
-        _basicRecognizer.RecognizeCompleted += RecognizeCompleted;
+        _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
+        _speechRecognizerWindows.BabbleTimeout = TimeSpan.FromSeconds(3);
+        _speechRecognizerWindows.InitialSilenceTimeout = TimeSpan.FromSeconds(3);
+        _speechRecognizerWindows.RecognizeCompleted += RecognizeCompleted;
 
     }
 
@@ -113,7 +128,7 @@ public class MainViewModel : ViewModelBase
                     speakResult = false;
                     break;
             }
-            if (speakResult && e.Result.Confidence > 0.7) _basicSynthesizer.SpeakAsync(responseText);
+            if (speakResult && e.Result.Confidence > 0.7) _speechSynthesizerWindows.SpeakAsync(responseText);
             ResponseText = responseText;
         }
         else
@@ -123,7 +138,7 @@ public class MainViewModel : ViewModelBase
     public void ActivateRecognition()
     {
         ResponseText = string.Empty;
-        _basicRecognizer.RecognizeAsync();
+        _speechRecognizerWindows.RecognizeAsync();
     }
     public event Action RequestClose;
     public virtual void Close()
