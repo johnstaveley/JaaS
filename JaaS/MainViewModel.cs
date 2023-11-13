@@ -30,7 +30,8 @@ public class MainViewModel : ViewModelBase
         _configuration = configuration;
         _basicRecognizer = new SpeechRecognitionEngine();
         _basicSynthesizer = new System.Speech.Synthesis.SpeechSynthesizer();
-        //_speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(SpeechConfig.FromSubscription(configuration.SpeechSubscriptionKey, configuration.SpeechRegion));
+        var azureSpeechConfig = SpeechConfig.FromSubscription(configuration.SpeechSubscriptionKey, configuration.SpeechRegion);
+//        _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig);
         _recognizedText = string.Empty;
         InitialiseRecognitionEngine();
         InitialiseSpeechSynthesiserEngine();
