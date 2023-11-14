@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Linq;
 using System.Speech.Recognition;
+using System.Threading.Tasks;
 using JaaS.Models;
 using Microsoft.CognitiveServices.Speech;
 
@@ -128,17 +129,30 @@ public class MainViewModel : ViewModelBase
                     speakResult = false;
                     break;
             }
-            if (speakResult && e.Result.Confidence > 0.7) _speechSynthesizerWindows.SpeakAsync(responseText);
+            if (speakResult && e.Result.Confidence > 0.7)
+            {
+                Speak(responseText);
+            }
             ResponseText = responseText;
         }
         else
             ResponseText = "I have no idea what you just said.";
     }
+    private void Speak(string responseText)
+    {
+        if (_speechSynthesizerWindows != null)
+        {
+            _speechSynthesizerWindows.SpeakAsync(responseText);
+        }
+    }
 
     public void ActivateRecognition()
     {
         ResponseText = string.Empty;
-        _speechRecognizerWindows.RecognizeAsync();
+        if (_speechSynthesizerWindows != null)
+        {
+            _speechRecognizerWindows.RecognizeAsync();
+        }
     }
     public event Action RequestClose;
     public virtual void Close()
