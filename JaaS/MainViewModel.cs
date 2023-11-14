@@ -101,34 +101,8 @@ public class MainViewModel : ViewModelBase
     {
         if (e.Result != null)
         {
-            var responseText = "";
             var speakResult = true;
-            switch (e.Result.Text)
-            {
-                case "Hello":
-                    responseText = "Hello, World!";
-                    break;
-                case "Jars":
-                    responseText = "Jars is a great guy!";
-                    break;
-                case "Close":
-                    responseText = "Closing the application.";
-                    Close();
-                    break;
-                case "sponsor":
-                    responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains.";
-                    break;
-                case "next event":
-                    responseText = "The next event is on the 25th of Jaunary by Michael Gray talking about what is the role of a principal engineer.";
-                    break;
-                case "Open the pod bay doors":
-                    responseText = "I'm sorry Dave. I'm afraid I can't do that.";
-                    break;
-                default:
-                    responseText = e.Result.Text;
-                    speakResult = false;
-                    break;
-            }
+            var responseText = GetResponse(e.Result.Text, out speakResult);
             if (speakResult && e.Result.Confidence > 0.7)
             {
                 Speak(responseText);
@@ -137,6 +111,38 @@ public class MainViewModel : ViewModelBase
         }
         else
             ResponseText = "I have no idea what you just said.";
+    }
+    private string GetResponse(string input, out bool speakResult)
+    {
+        var responseText = "";
+        speakResult = true;
+        switch (input)
+        {
+            case "Hello":
+                responseText = "Hello, World!";
+                break;
+            case "Jars":
+                responseText = "Jars is a great guy!";
+                break;
+            case "Close":
+                responseText = "Closing the application.";
+                Close();
+                break;
+            case "sponsor":
+                responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains.";
+                break;
+            case "next event":
+                responseText = "The next event is on the 25th of Jaunary by Michael Gray talking about what is the role of a principal engineer.";
+                break;
+            case "Open the pod bay doors":
+                responseText = "I'm sorry Dave. I'm afraid I can't do that.";
+                break;
+            default:
+                responseText = input;
+                speakResult = false;
+                break;
+        }
+        return responseText;
     }
     private void Speak(string responseText)
     {
