@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Speech.Recognition;
 using System.Threading.Tasks;
 using JaaS.Models;
 using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
 
 namespace JaaS;
 
@@ -39,7 +41,8 @@ public class MainViewModel : ViewModelBase
         else
         {
             var azureSpeechConfig = SpeechConfig.FromSubscription(configuration.AzureSpeechSubscriptionKey, configuration.AzureSpeechRegion);
-            _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig);
+            _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig, GetAudioConfig());
+            _speechRecognizerWindows = null;
         }
         if (_configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Windows) {
             _speechSynthesizerWindows = new System.Speech.Synthesis.SpeechSynthesizer();
@@ -69,6 +72,11 @@ public class MainViewModel : ViewModelBase
             _speechSynthesizerWindows.SelectVoice(chosenVoice.VoiceInfo.Name);
         }
     }
+    private AudioConfig GetAudioConfig()
+    {
+        var audioConfig = AudioConfig.FromDefaultMicrophoneInput();
+        return audioConfig;
+    }
 
     private void InitialiseWindowsRecognitionEngine()
     {
@@ -93,11 +101,11 @@ public class MainViewModel : ViewModelBase
         _speechRecognizerWindows.LoadGrammar(new System.Speech.Recognition.Grammar(builder));
         _speechRecognizerWindows.BabbleTimeout = TimeSpan.FromSeconds(3);
         _speechRecognizerWindows.InitialSilenceTimeout = TimeSpan.FromSeconds(3);
-        _speechRecognizerWindows.RecognizeCompleted += RecognizeCompleted;
+        _speechRecognizerWindows.RecognizeCompleted += WindowsRecognizeCompleted;
 
     }
 
-    private void RecognizeCompleted(object? sender, RecognizeCompletedEventArgs e)
+    private void WindowsRecognizeCompleted(object? sender, RecognizeCompletedEventArgs e)
     {
         if (e.Result != null)
         {
@@ -116,15 +124,16 @@ public class MainViewModel : ViewModelBase
     {
         var responseText = "";
         speakResult = true;
-        switch (input)
+        switch (input.ToLower().Trim('.'))
         {
-            case "Hello":
+            case "hello":
                 responseText = "Hello, World!";
                 break;
-            case "Jars":
+            case "jars":
+            case "jaws":
                 responseText = "Jars is a great guy!";
                 break;
-            case "Close":
+            case "close":
                 responseText = "Closing the application.";
                 Close();
                 break;
@@ -134,7 +143,7 @@ public class MainViewModel : ViewModelBase
             case "next event":
                 responseText = "The next event is on the 25th of Jaunary by Michael Gray talking about what is the role of a principal engineer.";
                 break;
-            case "Open the pod bay doors":
+            case "open the pod bay doors":
                 responseText = "I'm sorry Dave. I'm afraid I can't do that.";
                 break;
             default:
@@ -146,7 +155,7 @@ public class MainViewModel : ViewModelBase
     }
     private void Speak(string responseText)
     {
-        if (_speechSynthesizerWindows != null)
+        if (_speechSynthesizerWindows != null && _configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Windows)
         {
             _speechSynthesizerWindows.SpeakAsync(responseText);
         }
@@ -155,9 +164,25 @@ public class MainViewModel : ViewModelBase
     public void ActivateRecognition()
     {
         ResponseText = string.Empty;
-        if (_speechSynthesizerWindows != null)
+        if (_speechRecognizerWindows != null && _configuration.SpeechRecognizerStrategy == SpeechStrategyKind.Windows)
         {
             _speechRecognizerWindows.RecognizeAsync();
+        }
+        if (_speechRecognizerAzure != null && _configuration.SpeechRecognizerStrategy == SpeechStrategyKind.Azure)
+        {
+            var result = _speechRecognizerAzure.RecognizeOnceAsync().Result;
+            if (result.Reason == ResultReason.RecognizedSpeech)
+            {
+                var speakResult = true;
+                var responseText = GetResponse(result.Text.Trim('.'), out speakResult);
+                if (speakResult)
+                {
+                    Speak(responseText);
+                }
+                ResponseText = responseText;
+            }
+            else
+                ResponseText = "I have no idea what you just said.";
         }
     }
     public event Action RequestClose;

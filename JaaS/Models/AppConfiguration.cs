@@ -14,7 +14,7 @@ public class AppConfiguration
     public AppConfiguration()
     {
         SpeechRecognizerStrategy = (SpeechStrategyKind) Enum.Parse(typeof(SpeechStrategyKind), ConfigurationManager.AppSettings.Get("SpeechRecognizerStrategy"), true);
-        SpeechSynthesiserStrategy = (SpeechStrategyKind) Enum.Parse(typeof(SpeechStrategyKind), ConfigurationManager.AppSettings.Get("SpeechRecognizerStrategy"), true);
+        SpeechSynthesiserStrategy = (SpeechStrategyKind) Enum.Parse(typeof(SpeechStrategyKind), ConfigurationManager.AppSettings.Get("SpeechSynthesiserStrategy"), true);
         AzureSpeechSubscriptionKey = ConfigurationManager.AppSettings.Get("SpeechSubscriptionKey");
         AzureSpeechRegion = ConfigurationManager.AppSettings.Get("SpeechRegion");
 
