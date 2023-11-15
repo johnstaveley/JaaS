@@ -70,7 +70,7 @@ public class MainViewModel : ViewModelBase
     private void InitialiseWindowsSpeechSynthesiserEngine()
     {
         _speechSynthesizerWindows.SetOutputToDefaultAudioDevice();
-        _speechSynthesizerWindows.Rate = -2;
+        _speechSynthesizerWindows.Rate = 2;
         var installedVoices = _speechSynthesizerWindows.GetInstalledVoices().ToList();
         var chosenVoice = installedVoices.FirstOrDefault(x => x.VoiceInfo.Name == "Microsoft David Desktop");
         if (chosenVoice != null)
@@ -130,32 +130,45 @@ public class MainViewModel : ViewModelBase
     {
         var responseText = "";
         speakResult = true;
-        switch (input.ToLower().Trim('.'))
+        var originalInput = input;
+        input = input.ToLower().Trim('.');
+        if (input.StartsWith("hello"))
         {
-            case "hello":
-                responseText = "Hello, World!";
-                break;
-            case "jars":
-            case "jaws":
-                responseText = "Jars is a great guy!";
-                break;
-            case "close":
-                responseText = "Closing the application.";
-                Close();
-                break;
-            case "sponsor":
-                responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains.";
-                break;
-            case "next event":
-                responseText = "The next event is on the 25th of Jaunary by Michael Gray talking about what is the role of a principal engineer.";
-                break;
-            case "open the pod bay doors":
-                responseText = "I'm sorry Dave. I'm afraid I can't do that.";
-                break;
-            default:
-                responseText = input;
-                speakResult = false;
-                break;
+            responseText += "Hello, World!";
+        } else if (input.Contains("jars") || input.Contains("jaws"))
+        {
+            responseText += "Jars is a great guy!";
+        }
+        else if (input == "close")
+        {
+            responseText = "Closing the application.";
+            Close();
+        }
+        else if (input.Contains("sponsor"))
+        {
+            responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains.";
+        }
+        else if (input.Contains("next event"))
+        {
+            responseText = "The next event is on the 25th of Jaunary by Michael Gray talking about what is the role of a principal engineer.";
+        }
+        else if (input == "open the pod bay doors")
+        {
+            responseText = "I'm sorry Dave. I'm afraid I can't do that.";
+        }
+        else if (_openAiClient != null && _chatCompletionsOptions != null)
+        {
+            _chatCompletionsOptions.Messages.Add(new ChatMessage(ChatRole.User, originalInput));
+            Response<ChatCompletions> responseWithoutStream = _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions).Result;
+            ChatCompletions response = responseWithoutStream.Value;
+            var responseMessage = new ChatMessage(ChatRole.System, response.Choices.FirstOrDefault().Message.Content);
+            _chatCompletionsOptions.Messages.Add(responseMessage);
+            responseText = response.Choices.FirstOrDefault().Message.Content;
+        }
+        else
+        {
+            responseText = originalInput;
+            speakResult = false;
         }
         return responseText;
     }
@@ -206,6 +219,7 @@ public class MainViewModel : ViewModelBase
             {
                 new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences or less.")
             },
+            DeploymentName = _configuration.AzureOpenAiDeployment,
             Temperature = (float)0.5,
             MaxTokens = 800,
             NucleusSamplingFactor = (float)0.95,
