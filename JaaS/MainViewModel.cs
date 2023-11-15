@@ -1,22 +1,22 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Speech.Recognition;
-using System.Threading.Tasks;
-using JaaS.Models;
+﻿using JaaS.Models;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
+using System;
+using System.Linq;
+using System.Speech.Recognition;
+using Azure.AI.OpenAI;
+using Azure;
 
 namespace JaaS;
 
 public class MainViewModel : ViewModelBase
 {
-    private SpeechRecognitionEngine? _speechRecognizerWindows;
     private AppConfiguration _configuration;
+    private OpenAIClient? _openAiClient;
+    private ChatCompletionsOptions? _chatCompletionsOptions;
     private Microsoft.CognitiveServices.Speech.SpeechRecognizer? _speechRecognizerAzure;
+    private SpeechRecognitionEngine? _speechRecognizerWindows;
     private System.Speech.Synthesis.SpeechSynthesizer? _speechSynthesizerWindows;
-
 
     private string? _recognizedText;
     public string? ResponseText
@@ -32,6 +32,11 @@ public class MainViewModel : ViewModelBase
     public MainViewModel(AppConfiguration configuration)
     {
         _configuration = configuration;
+        if (configuration.UseOpenAi)
+        {
+            _openAiClient = new OpenAIClient(new Uri(configuration.AzureOpenAiUrl), new AzureKeyCredential(configuration.AzureOpenAiKey));
+            InitialiseChatGpt();
+        }
         if (configuration.SpeechRecognizerStrategy == SpeechStrategyKind.Windows)
         {
             _speechRecognizerAzure = null;
@@ -44,7 +49,8 @@ public class MainViewModel : ViewModelBase
             _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig, GetAudioConfig());
             _speechRecognizerWindows = null;
         }
-        if (_configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Windows) {
+        if (_configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Windows)
+        {
             _speechSynthesizerWindows = new System.Speech.Synthesis.SpeechSynthesizer();
             InitialiseWindowsSpeechSynthesiserEngine();
         }
@@ -55,7 +61,7 @@ public class MainViewModel : ViewModelBase
     {
         if (_speechRecognizerWindows != null)
             _speechRecognizerWindows.Dispose();
-        if (_speechRecognizerAzure!= null)
+        if (_speechRecognizerAzure != null)
             _speechRecognizerAzure.Dispose();
         if (_speechSynthesizerWindows != null)
             _speechSynthesizerWindows.Dispose();
@@ -173,8 +179,7 @@ public class MainViewModel : ViewModelBase
             var result = _speechRecognizerAzure.RecognizeOnceAsync().Result;
             if (result.Reason == ResultReason.RecognizedSpeech)
             {
-                var speakResult = true;
-                var responseText = GetResponse(result.Text.Trim('.'), out speakResult);
+                var responseText = GetResponse(result.Text.Trim('.'), out bool speakResult);
                 if (speakResult)
                 {
                     Speak(responseText);
@@ -192,5 +197,20 @@ public class MainViewModel : ViewModelBase
         {
             RequestClose();
         }
+    }
+    private void InitialiseChatGpt()
+    {
+        _chatCompletionsOptions = new ChatCompletionsOptions()
+        {
+            Messages =
+            {
+                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences or less.")
+            },
+            Temperature = (float)0.5,
+            MaxTokens = 800,
+            NucleusSamplingFactor = (float)0.95,
+            FrequencyPenalty = 0,
+            PresencePenalty = 0,
+        };
     }
 }
