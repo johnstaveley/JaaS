@@ -70,7 +70,7 @@ public class MainViewModel : ViewModelBase
     private void InitialiseWindowsSpeechSynthesiserEngine()
     {
         _speechSynthesizerWindows.SetOutputToDefaultAudioDevice();
-        _speechSynthesizerWindows.Rate = 2;
+        _speechSynthesizerWindows.Rate = 0;
         var installedVoices = _speechSynthesizerWindows.GetInstalledVoices().ToList();
         var chosenVoice = installedVoices.FirstOrDefault(x => x.VoiceInfo.Name == "Microsoft David Desktop");
         if (chosenVoice != null)
@@ -115,8 +115,7 @@ public class MainViewModel : ViewModelBase
     {
         if (e.Result != null)
         {
-            var speakResult = true;
-            var responseText = GetResponse(e.Result.Text, out speakResult);
+            var responseText = GetResponse(e.Result.Text, out bool speakResult);
             if (speakResult && e.Result.Confidence > 0.7)
             {
                 Speak(responseText);
