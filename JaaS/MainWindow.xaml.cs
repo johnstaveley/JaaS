@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 
 namespace JaaS;
@@ -10,7 +9,6 @@ namespace JaaS;
 public partial class MainWindow : Window
 {
     public MainViewModel Model;
-
 
     public MainWindow()
     {
