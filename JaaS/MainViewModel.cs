@@ -149,7 +149,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (input.Contains("next event"))
         {
-            responseText = "The next event is on the 25th of Jaunary by Michael Gray talking about what is the role of a principal engineer.";
+            responseText = "The next event is on the 25th of January by Michael Gray talking about what is the role of a principal engineer.";
         }
         else if (input == "open the pod bay doors")
         {
