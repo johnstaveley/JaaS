@@ -6,6 +6,7 @@ using System.Linq;
 using System.Speech.Recognition;
 using Azure.AI.OpenAI;
 using Azure;
+using System.Configuration;
 
 namespace JaaS;
 
@@ -17,6 +18,7 @@ public class MainViewModel : ViewModelBase
     private Microsoft.CognitiveServices.Speech.SpeechRecognizer? _speechRecognizerAzure;
     private SpeechRecognitionEngine? _speechRecognizerWindows;
     private System.Speech.Synthesis.SpeechSynthesizer? _speechSynthesizerWindows;
+    private SpeechSynthesizer? _speechSynthesizerAzure;
 
     private string? _recognizedText;
     public string? ResponseText
@@ -37,6 +39,12 @@ public class MainViewModel : ViewModelBase
             _openAiClient = new OpenAIClient(new Uri(configuration.AzureOpenAiUrl), new AzureKeyCredential(configuration.AzureOpenAiKey));
             InitialiseChatGpt();
         }
+        SpeechConfig azureSpeechConfig = null;
+        if (configuration.SpeechRecognizerStrategy == SpeechStrategyKind.Azure ||
+            configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Azure)
+        {
+            azureSpeechConfig = SpeechConfig.FromSubscription(configuration.AzureSpeechSubscriptionKey, configuration.AzureSpeechRegion);
+        }
         if (configuration.SpeechRecognizerStrategy == SpeechStrategyKind.Windows)
         {
             _speechRecognizerAzure = null;
@@ -45,14 +53,19 @@ public class MainViewModel : ViewModelBase
         }
         else
         {
-            var azureSpeechConfig = SpeechConfig.FromSubscription(configuration.AzureSpeechSubscriptionKey, configuration.AzureSpeechRegion);
-            _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig, GetAudioConfig());
+            _speechRecognizerAzure = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(azureSpeechConfig, AudioConfig.FromDefaultMicrophoneInput());
             _speechRecognizerWindows = null;
         }
         if (_configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Windows)
         {
             _speechSynthesizerWindows = new System.Speech.Synthesis.SpeechSynthesizer();
             InitialiseWindowsSpeechSynthesiserEngine();
+            _speechSynthesizerAzure = null;
+        }
+        else
+        {
+            InitialiseAzureSpeechSynthesis(azureSpeechConfig);
+            _speechSynthesizerWindows = null;
         }
         _recognizedText = string.Empty;
     }
@@ -65,7 +78,8 @@ public class MainViewModel : ViewModelBase
             _speechRecognizerAzure.Dispose();
         if (_speechSynthesizerWindows != null)
             _speechSynthesizerWindows.Dispose();
-
+        if (_speechSynthesizerAzure != null)
+            _speechSynthesizerAzure.Dispose();
     }
     private void InitialiseWindowsSpeechSynthesiserEngine()
     {
@@ -77,11 +91,6 @@ public class MainViewModel : ViewModelBase
         {
             _speechSynthesizerWindows.SelectVoice(chosenVoice.VoiceInfo.Name);
         }
-    }
-    private AudioConfig GetAudioConfig()
-    {
-        var audioConfig = AudioConfig.FromDefaultMicrophoneInput();
-        return audioConfig;
     }
 
     private void InitialiseWindowsRecognitionEngine()
@@ -134,7 +143,8 @@ public class MainViewModel : ViewModelBase
         if (input.StartsWith("hello"))
         {
             responseText += "Hello, World!";
-        } else if (input.Contains("jars") || input.Contains("jaws"))
+        }
+        else if (input.Contains("jars") || input.Contains("jaws"))
         {
             responseText += "Jars is a great guy!";
         }
@@ -177,6 +187,10 @@ public class MainViewModel : ViewModelBase
         {
             _speechSynthesizerWindows.SpeakAsync(responseText);
         }
+        if (_speechSynthesizerAzure != null && _configuration.SpeechSynthesiserStrategy == SpeechStrategyKind.Azure)
+        {
+            _speechSynthesizerAzure.SpeakTextAsync(responseText);
+        }
     }
 
     public void ActivateRecognition()
@@ -209,6 +223,14 @@ public class MainViewModel : ViewModelBase
         {
             RequestClose();
         }
+    }
+    private void InitialiseAzureSpeechSynthesis(SpeechConfig azureSpeechConfig)
+    {
+        azureSpeechConfig.SpeechRecognitionLanguage = "en-GB";
+        //azureSpeechConfig.SpeechSynthesisVoiceName = "Ethan"; // Thomas, Oliver, Ethan, Noah, Elliot, Alfie, Ryan
+        _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);
+        //using var voices = _speechSynthesizerAzure.GetVoicesAsync("en-GB").Result;
+
     }
     private void InitialiseChatGpt()
     {
