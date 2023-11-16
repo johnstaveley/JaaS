@@ -159,7 +159,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (input.Contains("next event"))
         {
-            responseText = "The next event is on the 25th of January by Michael Gray talking about what is the role of a principal engineer.";
+            responseText = "The next event is on the 25th of January by Michael Gray. He is talking about what is the role of a principal engineer.";
         }
         else if (input == "open the pod bay doors")
         {
@@ -227,10 +227,16 @@ public class MainViewModel : ViewModelBase
     private void InitialiseAzureSpeechSynthesis(SpeechConfig azureSpeechConfig)
     {
         azureSpeechConfig.SpeechRecognitionLanguage = "en-GB";
-        //azureSpeechConfig.SpeechSynthesisVoiceName = "Ethan"; // Thomas, Oliver, Ethan, Noah, Elliot, Alfie, Ryan
+        azureSpeechConfig.SpeechSynthesisLanguage = "en-GB";
+        // Microsoft Server Speech Text to Speech Voice (en-GB, [Voice]Neural) Where voice is one of:  Thomas, Oliver, Ethan, Noah, Elliot, Alfie, Ryan
+        azureSpeechConfig.SpeechSynthesisVoiceName = "Microsoft Server Speech Text to Speech Voice (en-GB, OliverNeural)"; 
         _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);
-        //using var voices = _speechSynthesizerAzure.GetVoicesAsync("en-GB").Result;
-
+/*        using var voices = _speechSynthesizerAzure.GetVoicesAsync(azureSpeechConfig.SpeechSynthesisLanguage).Result;
+        var englishMaleVoices = voices.Voices.Where(a => a.Gender == SynthesisVoiceGender.Male && a.Locale == "en-GB").ToList();
+        var voiceIndex = new Random().Next(0, englishMaleVoices.Count);
+        var voice = englishMaleVoices[voiceIndex];
+        azureSpeechConfig.SpeechSynthesisVoiceName = voice.Name;
+        _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);*/
     }
     private void InitialiseChatGpt()
     {
