@@ -231,12 +231,18 @@ public class MainViewModel : ViewModelBase
         // Microsoft Server Speech Text to Speech Voice (en-GB, [Voice]Neural) Where voice is one of:  Thomas, Oliver, Ethan, Noah, Elliot, Alfie, Ryan
         azureSpeechConfig.SpeechSynthesisVoiceName = "Microsoft Server Speech Text to Speech Voice (en-GB, OliverNeural)"; 
         _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);
-/*        using var voices = _speechSynthesizerAzure.GetVoicesAsync(azureSpeechConfig.SpeechSynthesisLanguage).Result;
+        using var voices = _speechSynthesizerAzure.GetVoicesAsync(azureSpeechConfig.SpeechSynthesisLanguage).Result;
         var englishMaleVoices = voices.Voices.Where(a => a.Gender == SynthesisVoiceGender.Male && a.Locale == "en-GB").ToList();
         var voiceIndex = new Random().Next(0, englishMaleVoices.Count);
         var voice = englishMaleVoices[voiceIndex];
+        var oliver = englishMaleVoices.FirstOrDefault(a => a.Name == "Microsoft Server Speech Text to Speech Voice (en-GB, OliverNeural)");
+        if (oliver != null)
+        {
+            voice = oliver;
+        }
         azureSpeechConfig.SpeechSynthesisVoiceName = voice.Name;
-        _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);*/
+        _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);
+
     }
     private void InitialiseChatGpt()
     {
