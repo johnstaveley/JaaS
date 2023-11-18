@@ -144,7 +144,7 @@ public class MainViewModel : ViewModelBase
         {
             responseText += "Hello, World!";
         }
-        else if (input.Contains("jars") || input.Contains("jaws"))
+        else if (input.Contains("jars") || input.Contains("jaws") || input.Contains("gaz") || input.Contains("charles"))
         {
             responseText += "Jars is a great guy!";
         }
