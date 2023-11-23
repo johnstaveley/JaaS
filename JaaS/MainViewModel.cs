@@ -1,12 +1,11 @@
-﻿using JaaS.Models;
+﻿using Azure;
+using Azure.AI.OpenAI;
+using JaaS.Models;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using System;
 using System.Linq;
 using System.Speech.Recognition;
-using Azure.AI.OpenAI;
-using Azure;
-using System.Configuration;
 
 namespace JaaS;
 
@@ -134,42 +133,42 @@ public class MainViewModel : ViewModelBase
         else
             ResponseText = "I have no idea what you just said.";
     }
-    private string GetResponse(string input, out bool speakResult)
+    private string GetResponse(string inputSpeech, out bool speakResult)
     {
         var responseText = "";
         speakResult = true;
-        var originalInput = input;
-        input = input.ToLower().Trim('.');
-        if (input.StartsWith("hello"))
+        var originalInput = inputSpeech;
+        inputSpeech = inputSpeech.ToLower().Trim('.');
+        if (inputSpeech.StartsWith("hello"))
         {
             responseText += "Hello everyone and welcome!";
         }
-        else if (input.Contains("jars") || input.Contains("jaws") || input.Contains("gaz") || input.Contains("charles"))
+        else if (inputSpeech.Contains("jars") || inputSpeech.Contains("jaws") || inputSpeech.Contains("gaz") || inputSpeech.Contains("charles"))
         {
-            responseText += "Jars is a great guy!";
+            responseText += "Jars is a great guy! Any rumours he wants to take over the world are meerly a misquotation";
         }
-        else if (input == "close")
+        else if (inputSpeech == "close")
         {
             responseText = "Closing the application.";
             Close();
         }
-        else if (input.Contains("sponsor"))
+        else if (inputSpeech.Contains("sponsor"))
         {
             responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains. We thank them for the pizza, beer, meeting rooms and free licences";
         }
-        else if (input.Contains("next event"))
+        else if (inputSpeech.Contains("next event"))
         {
             responseText = "The next event is on the 25th of January by Michael Gray. He is talking about what is the role of a principal engineer.";
         }
-        else if (input == "open the pod bay doors")
+        else if (inputSpeech == "open the pod bay doors")
         {
             responseText = "I'm sorry Dave. I'm afraid I can't do that.";
         }
-        else if (input == "news")
+        else if (inputSpeech == "news")
         {
             responseText = "The latest news is that we have just had dot net conf";
         }
-        else if (input == "wrap up")
+        else if (inputSpeech == "wrap up")
         {
             responseText = "Please follow us on twitter @ Leeds Sharp. Please speak to the human if you would like to do a talk in the future. We will be going to the pub after the video, well you will, I will be continuing my quest for world domination.";
         }
@@ -258,7 +257,8 @@ public class MainViewModel : ViewModelBase
         {
             Messages =
             {
-                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences or less.")
+                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences " +
+                "or less.")
             },
             DeploymentName = _configuration.AzureOpenAiDeployment,
             Temperature = (float)0.5,
