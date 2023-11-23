@@ -142,7 +142,7 @@ public class MainViewModel : ViewModelBase
         input = input.ToLower().Trim('.');
         if (input.StartsWith("hello"))
         {
-            responseText += "Hello, World!";
+            responseText += "Hello everyone and welcome!";
         }
         else if (input.Contains("jars") || input.Contains("jaws") || input.Contains("gaz") || input.Contains("charles"))
         {
@@ -155,7 +155,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (input.Contains("sponsor"))
         {
-            responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains.";
+            responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains. We thank them for the pizza, beer, meeting rooms and free licences";
         }
         else if (input.Contains("next event"))
         {
@@ -164,6 +164,14 @@ public class MainViewModel : ViewModelBase
         else if (input == "open the pod bay doors")
         {
             responseText = "I'm sorry Dave. I'm afraid I can't do that.";
+        }
+        else if (input == "news")
+        {
+            responseText = "The latest news is that we have just had dot net conf";
+        }
+        else if (input == "wrap up")
+        {
+            responseText = "Please follow us on twitter @ Leeds Sharp. Please speak to the human if you would like to do a talk in the future. We will be going to the pub after the video, well you will, I will be continuing my quest for world domination.";
         }
         else if (_openAiClient != null && _chatCompletionsOptions != null)
         {
