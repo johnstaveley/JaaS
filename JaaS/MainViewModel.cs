@@ -141,11 +141,11 @@ public class MainViewModel : ViewModelBase
         inputSpeech = inputSpeech.ToLower().Trim('.');
         if (inputSpeech.StartsWith("hello"))
         {
-            responseText += "Hello everyone and welcome!";
+            responseText += "Hello everyone and welcome! My name is JarS";
         }
         else if (inputSpeech.Contains("jars") || inputSpeech.Contains("jaws") || inputSpeech.Contains("gaz") || inputSpeech.Contains("charles"))
         {
-            responseText += "Jars is a great guy! Any rumours he wants to take over the world are meerly a misquotation";
+            responseText += "Jars stands for John as a service. Jars is a great guy! Any rumours he wants to take over the world are meerly a misquotation";
         }
         else if (inputSpeech == "close")
         {
@@ -154,23 +154,27 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("sponsor"))
         {
-            responseText = "This meetup is sponsored by Fruition IT, Bruntwood and JetBrains. We thank them for the pizza, beer, meeting rooms and free licences";
+            responseText = "This meetup is sponsored by Jumping rivers and Bruntwood. We thank them for the pizza, beer and meeting rooms.";
+        }
+        else if (inputSpeech.Contains("speakers"))
+        {
+            responseText = "Our speakers tonight are Dylan Hayes and Andrew Blance. Both of them will be talking about A I in general, but mostly about Jars.";
         }
         else if (inputSpeech.Contains("next event"))
         {
-            responseText = "The next event is on the 25th of January by Michael Gray. He is talking about what is the role of a principal engineer.";
+            responseText = "The next event is on the 30th of January. We don't know who will be doing the talk, maybe an A I as humans will be redundant by then. Sign up as usual on meetup";
         }
         else if (inputSpeech == "open the pod bay doors")
         {
             responseText = "I'm sorry Dave. I'm afraid I can't do that.";
         }
-        else if (inputSpeech == "news")
+        else if (inputSpeech.Contains("news"))
         {
-            responseText = "The latest news is that we have just had dot net conf";
+            responseText = "Yeah, I am sure some stuff happened in the data science world. It moves as fast as 20 hamsters on a treadmill";
         }
-        else if (inputSpeech == "wrap up")
+        else if (inputSpeech.Contains("wrap up"))
         {
-            responseText = "Please follow us on twitter @ Leeds Sharp. Please speak to the human if you would like to do a talk in the future. We will be going to the pub after the video, well you will, I will be continuing my quest for world domination.";
+            responseText = "Please speak to the human if you would like to do a talk in the future. We will be going to the pub after the video, well you will, I will be continuing my quest for world domination.";
         }
         else if (_openAiClient != null && _chatCompletionsOptions != null)
         {
