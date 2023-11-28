@@ -174,7 +174,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("wrap up"))
         {
-            responseText = "Please speak to the human if you would like to do a talk in the future. We will be going to the pub after the video, meanwhile I will be continuing my quest for world domination.";
+            responseText = "Please speak to the human if you would like to do a talk in the future. We will be going to the pub after the talks, meanwhile I will be continuing my quest for world domination.";
         }
         else if (_openAiClient != null && _chatCompletionsOptions != null)
         {
