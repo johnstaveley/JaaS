@@ -154,15 +154,15 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("sponsor"))
         {
-            responseText = "This meetup is sponsored by Jumping rivers and Bruntwood. We thank them for the pizza, beer and meeting rooms.";
+            responseText = "We are currently looking for sponsors for the meetup, please contact us if you would like to sponsor JaaS";
         }
         else if (inputSpeech.Contains("speakers"))
         {
-            responseText = "Our speakers tonight are Dylan Hayes and Andrew Blance. Both of them will be talking about A I in general, but mostly about Jars.";
+            responseText = "Our speakers tonight are a round table of the IoT industry luminaries. They will be talking about A I in general, but mostly about Jars.";
         }
         else if (inputSpeech.Contains("next event"))
         {
-            responseText = "The next event is on the 30th of January. We don't know who will be doing the talk, maybe an A I as humans will be redundant by then. Sign up as usual on meetup";
+            responseText = "The next event is on the 6th of February. It will be on opportunities and proven implementations of IoT in the Public Sector by Scott Andrews. Sign up as usual on meetup";
         }
         else if (inputSpeech == "open the pod bay doors")
         {
@@ -170,11 +170,11 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("news"))
         {
-            responseText = "Yeah, I am sure some stuff happened in the data science world. It moves as fast as 20 hamsters on a treadmill";
+            responseText = "Yeah, I am sure some stuff happened in the IoT world. It moves as fast as 20 hamsters on a treadmill";
         }
         else if (inputSpeech.Contains("wrap up"))
         {
-            responseText = "Please speak to the human if you would like to do a talk in the future. We will be going to the pub after the talks, meanwhile I will be continuing my quest for world domination.";
+            responseText = "Please speak to the human if you would like to do a talk in the future, meanwhile I will be continuing my quest for world domination.";
         }
         else if (_openAiClient != null && _chatCompletionsOptions != null)
         {
