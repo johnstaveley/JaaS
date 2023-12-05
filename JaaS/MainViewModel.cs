@@ -170,7 +170,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("news"))
         {
-            responseText = "Yeah, I am sure some stuff happened in the IoT world. It moves as fast as 20 hamsters on a treadmill";
+            responseText = "Today the design for the Z S Watch was finalised, an open source smart watch running Zephyr R TOS";
         }
         else if (inputSpeech.Contains("wrap up"))
         {
