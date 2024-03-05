@@ -43,7 +43,7 @@ namespace JaaS.Tests
             switch (speechSynthesisResult.Reason)
             {
                 case ResultReason.SynthesizingAudioCompleted:
-                    Console.WriteLine($"Speech synthesized for text: [{text}]");
+                    Assert.Pass($"Speech synthesized for text: [{text}]");
                     break;
                 case ResultReason.Canceled:
                     var cancellation = SpeechSynthesisCancellationDetails.FromResult(speechSynthesisResult);
@@ -51,9 +51,7 @@ namespace JaaS.Tests
 
                     if (cancellation.Reason == CancellationReason.Error)
                     {
-                        Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
-                        Console.WriteLine($"CANCELED: ErrorDetails=[{cancellation.ErrorDetails}]");
-                        Console.WriteLine($"CANCELED: Did you set the speech resource key and region values?");
+                        Assert.Fail($"CANCELED: ErrorCode={cancellation.ErrorCode} ErrorDetails=[{cancellation.ErrorDetails}] Did you set the speech resource key and region values?");
                     }
                     break;
                 default:
