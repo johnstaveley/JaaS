@@ -16,7 +16,6 @@ namespace JaaS.Tests
             azureSpeechConfig = SpeechConfig.FromSubscription(_configuration.AzureSpeechSubscriptionKey, _configuration.AzureSpeechRegion);
             azureSpeechConfig.SpeechRecognitionLanguage = "en-GB";
             azureSpeechConfig.SpeechSynthesisLanguage = "en-GB";
-
         }
 
         [Test]

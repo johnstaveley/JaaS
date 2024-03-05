@@ -5,6 +5,8 @@ namespace JaaS.Models;
 
 public class AppConfiguration
 {
+    public string AzureNeuralVoiceEndpointId { get; set; }
+    public string AzureNeuralVoiceName { get; set; }
     public string AzureOpenAiDeployment { get; set; }
     public string AzureOpenAiKey { get; set; }
     public string AzureOpenAiUrl { get; set; }
@@ -19,6 +21,8 @@ public class AppConfiguration
 
     public AppConfiguration()
     {
+        AzureNeuralVoiceEndpointId = ConfigurationManager.AppSettings["AzureNeuralVoiceEndpointId"] ?? "";
+        AzureNeuralVoiceName = ConfigurationManager.AppSettings["AzureNeuralVoiceName"] ?? "";
         AzureOpenAiDeployment = ConfigurationManager.AppSettings["AzureOpenAiDeployment"] ?? "";
         AzureOpenAiKey = ConfigurationManager.AppSettings.Get("AzureOpenAiKey") ?? "";
         AzureOpenAiUrl = ConfigurationManager.AppSettings.Get("AzureOpenAiUrl") ?? "";
