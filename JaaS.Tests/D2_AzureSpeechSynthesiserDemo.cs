@@ -14,7 +14,6 @@ public class D2_AzureSpeechSynthesiserDemo
     {
         _configuration = new AppConfiguration();
         azureSpeechConfig = SpeechConfig.FromSubscription(_configuration.AzureSpeechSubscriptionKey, _configuration.AzureSpeechRegion);
-        azureSpeechConfig.SpeechRecognitionLanguage = "en-GB";
         azureSpeechConfig.SpeechSynthesisLanguage = "en-GB";
     }
 

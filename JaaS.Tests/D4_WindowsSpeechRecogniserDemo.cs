@@ -1,4 +1,3 @@
-using Azure;
 using System.Speech.Recognition;
 
 namespace JaaS.Demos;
@@ -13,6 +12,7 @@ public class D4_WindowsSpeechRecogniserDemo
     public void Setup()
     {
         _response = "";
+        _confidence = 0.0f;
         _speechRecognizerWindows = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-GB"));
         _speechRecognizerWindows.SetInputToDefaultAudioDevice();
         GrammarBuilder builder = new GrammarBuilder();
