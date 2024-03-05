@@ -1,0 +1,1 @@
+To get this working, copy app.config from the main project and remame as testhost.dll.config

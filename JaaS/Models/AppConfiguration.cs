@@ -19,7 +19,7 @@ public class AppConfiguration
 
     public AppConfiguration()
     {
-        AzureOpenAiDeployment = ConfigurationManager.AppSettings.Get("AzureOpenAiDeployment") ?? "";
+        AzureOpenAiDeployment = ConfigurationManager.AppSettings["AzureOpenAiDeployment"] ?? "";
         AzureOpenAiKey = ConfigurationManager.AppSettings.Get("AzureOpenAiKey") ?? "";
         AzureOpenAiUrl = ConfigurationManager.AppSettings.Get("AzureOpenAiUrl") ?? "";
         AzureSpeechSubscriptionKey = ConfigurationManager.AppSettings.Get("AzureSpeechSubscriptionKey") ?? "";

@@ -158,7 +158,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("speakers"))
         {
-            responseText = "Our speakers tonight are a round table of IoT industry luminaries. They will be talking about A I in general, but mostly about Jars.";
+            responseText = "Our speakers tonight are a round table of industry luminaries. They will be talking about A I in general, but mostly about Jars.";
         }
         else if (inputSpeech.Contains("next event"))
         {

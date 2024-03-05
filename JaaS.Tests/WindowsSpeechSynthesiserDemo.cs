@@ -2,7 +2,7 @@ using System.Speech.Synthesis;
 
 namespace JaaS.Tests
 {
-    public class WindowsSpeechSynthesiserDemo
+    public class D1_WindowsSpeechSynthesiserDemo
     {
         private SpeechSynthesizer? _speechSynthesizerWindows;
 
@@ -21,6 +21,7 @@ namespace JaaS.Tests
         public async Task SayWithVoice(string chosenVoice, string speechText)
         {
             // Arrange
+            Assert.IsNotNull(_speechSynthesizerWindows);
             ChooseVoice(chosenVoice);
 
             // Act

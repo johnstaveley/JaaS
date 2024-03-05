@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /JaaS/App.config
 /JaaS/App.config
 /JaaS.Tests/App.config
+/JaaS.Tests/App.config
+/JaaS.Tests/testhost.dll.config
