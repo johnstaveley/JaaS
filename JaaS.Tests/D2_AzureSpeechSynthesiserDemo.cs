@@ -41,15 +41,7 @@ namespace JaaS.Tests
             azureSpeechConfig.SpeechSynthesisVoiceName = "Microsoft Server Speech Text to Speech Voice (en-GB, OliverNeural)";
             _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);
             using var voices = _speechSynthesizerAzure.GetVoicesAsync(azureSpeechConfig.SpeechSynthesisLanguage).Result;
-            var englishMaleVoices = voices.Voices.Where(a => a.Gender == SynthesisVoiceGender.Male && a.Locale == "en-GB").ToList();
-            var voiceIndex = new Random().Next(0, englishMaleVoices.Count);
-            var voice = englishMaleVoices[voiceIndex];
-            var oliver = englishMaleVoices.FirstOrDefault(a => a.Name == $"Microsoft Server Speech Text to Speech Voice (en-GB, {voiceName}Neural)");
-            // Microsoft Server Speech Text to Speech Voice (en-GB, SoniaNeural)
-            if (oliver != null)
-            {
-                voice = oliver;
-            }
+            var voice = voices.Voices.FirstOrDefault(a => a.Name == $"Microsoft Server Speech Text to Speech Voice (en-GB, {voiceName}Neural)");
             azureSpeechConfig.SpeechSynthesisVoiceName = voice.Name;
             _speechSynthesizerAzure = new SpeechSynthesizer(azureSpeechConfig);
         }
