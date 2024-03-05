@@ -2,7 +2,7 @@ using System.Speech.Synthesis;
 
 namespace JaaS.Tests
 {
-    public class WindowsSpeechSynthesiser
+    public class WindowsSpeechSynthesiserDemo
     {
         private SpeechSynthesizer? _speechSynthesizerWindows;
 
