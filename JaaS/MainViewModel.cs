@@ -141,7 +141,7 @@ public class MainViewModel : ViewModelBase
         inputSpeech = inputSpeech.ToLower().Trim('.');
         if (inputSpeech.StartsWith("hello"))
         {
-            responseText += "Hello everyone and welcome! My name is JarS";
+            responseText += "Hello everyone and welcome to Leeds Sharp! My name is JarS";
         }
         else if (inputSpeech.Contains("jars") || inputSpeech.Contains("jaws") || inputSpeech.Contains("gaz") || inputSpeech.Contains("charles"))
         {
@@ -158,7 +158,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("speakers"))
         {
-            responseText = "Our speakers tonight are a round table of the IoT industry luminaries. They will be talking about A I in general, but mostly about Jars.";
+            responseText = "Our speakers tonight are a round table of IoT industry luminaries. They will be talking about A I in general, but mostly about Jars.";
         }
         else if (inputSpeech.Contains("next event"))
         {

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JaaS", "JaaS\JaaS.csproj", "{F8A6FCDA-8195-4922-BF65-E711F5EA5F68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JaaS", "JaaS\JaaS.csproj", "{F8A6FCDA-8195-4922-BF65-E711F5EA5F68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JaaS.Tests", "JaaS.Tests\JaaS.Tests.csproj", "{226F9F05-630D-4734-8325-82DCF76334D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F8A6FCDA-8195-4922-BF65-E711F5EA5F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8A6FCDA-8195-4922-BF65-E711F5EA5F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8A6FCDA-8195-4922-BF65-E711F5EA5F68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226F9F05-630D-4734-8325-82DCF76334D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226F9F05-630D-4734-8325-82DCF76334D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226F9F05-630D-4734-8325-82DCF76334D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226F9F05-630D-4734-8325-82DCF76334D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
