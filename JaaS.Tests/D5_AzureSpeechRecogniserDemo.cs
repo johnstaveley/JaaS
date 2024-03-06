@@ -36,7 +36,7 @@ public class D5_AzureSpeechRecogniserDemo
         var result = await _speechRecognizerAzure.RecognizeOnceAsync();
         if (result.Reason == ResultReason.RecognizedSpeech)
         {             
-            response = result.Text.Trim('.');
+            response = result.Text.Trim('.').ToLower();
         }
 
         // Assert

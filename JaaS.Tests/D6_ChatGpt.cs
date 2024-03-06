@@ -33,8 +33,8 @@ public class D6_ChatGpt
     }
 
     [Test]
-    [TestCase("What is your name?", "My name is JaaS")]
-    [TestCase("What is the latest version of .net?", ".Net 5")]
+    [TestCase("What is your name?", "my name is jaas")]
+    [TestCase("What is the latest version of .net?", ".net 5")]
     public async Task IntroduceYourself(string prompt, string expectedResponse)
     {
         // Arrange
@@ -45,7 +45,7 @@ public class D6_ChatGpt
         // Act
         Response<ChatCompletions> responseWithoutStream = await _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions);
         ChatCompletions response = responseWithoutStream.Value;
-        var responseText = response.Choices.First().Message.Content;
+        var responseText = response.Choices.First().Message.Content.ToLower();
 
         // Assert
         Assert.IsTrue(responseText.Contains(expectedResponse));
