@@ -24,9 +24,9 @@ public class D6_ChatGpt
                     make things up and you reply with answers of 3 sentences or less.")
             },
             DeploymentName = _configuration.AzureOpenAiDeployment,
-            Temperature = (float)0.5,
+            Temperature = 0.5F,
             MaxTokens = 800,
-            NucleusSamplingFactor = (float)0.95,
+            NucleusSamplingFactor = 0.95F,
             FrequencyPenalty = 0,
             PresencePenalty = 0,
         };
@@ -38,12 +38,14 @@ public class D6_ChatGpt
     public async Task IntroduceYourself(string prompt, string expectedResponse)
     {
         // Arrange
+        Assert.IsNotNull(_openAiClient);
+        Assert.IsNotNull(_chatCompletionsOptions);
         _chatCompletionsOptions.Messages.Add(new ChatMessage(ChatRole.User, prompt));
 
         // Act
         Response<ChatCompletions> responseWithoutStream = await _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions);
         ChatCompletions response = responseWithoutStream.Value;
-        var responseText = response.Choices.FirstOrDefault().Message.Content;
+        var responseText = response.Choices.First().Message.Content;
 
         // Assert
         Assert.IsTrue(responseText.Contains(expectedResponse));
