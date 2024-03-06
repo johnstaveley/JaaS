@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Speech.AudioFormat;
 using System.Speech.Recognition;
 
 namespace JaaS.Demos;
@@ -7,6 +9,7 @@ public class D4_WindowsSpeechRecogniserDemo
     private SpeechRecognitionEngine? _speechRecognizerWindows;
     private string _response;
     private float _confidence;
+    private bool completed = false;
 
     [SetUp]
     public void Setup()
@@ -17,7 +20,8 @@ public class D4_WindowsSpeechRecogniserDemo
         _speechRecognizerWindows.SetInputToDefaultAudioDevice();
         GrammarBuilder builder = new GrammarBuilder();
         builder.Culture = _speechRecognizerWindows.RecognizerInfo.Culture;
-        builder.Append("hello");
+        builder.Append("speakers");
+        //builder.Append("who are the speakers this week");
         var grammar = new Grammar(builder);
         _speechRecognizerWindows.LoadGrammar(grammar);
         _speechRecognizerWindows.BabbleTimeout = TimeSpan.FromSeconds(3);
@@ -25,18 +29,29 @@ public class D4_WindowsSpeechRecogniserDemo
         _speechRecognizerWindows.RecognizeCompleted += WindowsRecognizeCompleted;
     }
 
+    /// <summary>
+    /// These tests illustrate the effect of the grammar on the recognition
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="expectedWord"></param>
+    /// <returns></returns>
     [Test]
-    [TestCase("Hello")]
-    public async Task RecogniseVoice(string expectedWord)
+    [TestCase("Speakers", "speakers")]
+    [TestCase("WhoAreTheSpeakers", "who are the speakers this week?")]
+    public async Task RecogniseVoice(string file, string expectedWord)
     {
         // Arrange
         Assert.IsNotNull(_speechRecognizerWindows);
+        var stream = LoadStreamFromEmbeddedResource($"JaaS.Demos.Resources.{file}.wav");
+        _speechRecognizerWindows.SetInputToAudioStream(stream, new SpeechAudioFormatInfo(44100, AudioBitsPerSample.Sixteen, AudioChannel.Mono));
 
         // Act
-        _speechRecognizerWindows.RecognizeAsync();
-        for (int i = 0; i < 10; i++)
+        _speechRecognizerWindows.RecognizeAsync(RecognizeMode.Multiple);
+        var counter = 0;
+        while (!completed && counter < 20)
         {
-            await Task.Delay(1000);
+            await Task.Delay(333);
+            counter++;
         }
 
         // Assert
@@ -48,6 +63,15 @@ public class D4_WindowsSpeechRecogniserDemo
         {
             _response = e.Result.Text;
             _confidence = e.Result.Confidence;
+            completed = true;
         }
+    }
+    private Stream LoadStreamFromEmbeddedResource(string resource)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var stream = assembly.GetManifestResourceStream(resource);
+        stream.Seek(0, SeekOrigin.Begin);
+        return stream;
+
     }
 }
