@@ -1,4 +1,4 @@
-using System.Reflection;
+using JaaS.Demos.Utility;
 using System.Speech.AudioFormat;
 using System.Speech.Recognition;
 
@@ -42,7 +42,7 @@ public class D4_WindowsSpeechRecogniserDemo
     {
         // Arrange
         Assert.IsNotNull(_speechRecognizerWindows);
-        var stream = LoadStreamFromEmbeddedResource($"JaaS.Demos.Resources.{file}.wav");
+        var stream = FileUtility.LoadStreamFromEmbeddedResource($"JaaS.Demos.Resources.{file}.wav");
         _speechRecognizerWindows.SetInputToAudioStream(stream, new SpeechAudioFormatInfo(44100, AudioBitsPerSample.Sixteen, AudioChannel.Mono));
 
         // Act
@@ -66,12 +66,5 @@ public class D4_WindowsSpeechRecogniserDemo
             completed = true;
         }
     }
-    private Stream LoadStreamFromEmbeddedResource(string resource)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var stream = assembly.GetManifestResourceStream(resource);
-        stream.Seek(0, SeekOrigin.Begin);
-        return stream;
 
-    }
 }
