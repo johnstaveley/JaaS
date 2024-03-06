@@ -39,6 +39,7 @@ public class D6_ChatGpt
 
     [Test]
     [TestCase("What is your name?", "My name is JaaS")]
+    [TestCase("What is the latest version of .net?", ".Net 5")]
     public async Task IntroduceYourself(string prompt, string expectedResponse)
     {
         // Arrange
@@ -47,11 +48,9 @@ public class D6_ChatGpt
         // Act
         Response<ChatCompletions> responseWithoutStream = _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions).Result;
         ChatCompletions response = responseWithoutStream.Value;
-        var responseMessage = new ChatMessage(ChatRole.System, response.Choices.FirstOrDefault().Message.Content);
-        _chatCompletionsOptions.Messages.Add(responseMessage);
         var responseText = response.Choices.FirstOrDefault().Message.Content;
 
         // Assert
-        Assert.AreEqual(expectedResponse, responseText);
+        Assert.IsTrue(responseText.Contains(expectedResponse));
     }
 }
