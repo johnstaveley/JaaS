@@ -1,11 +1,6 @@
 using Azure;
 using Azure.AI.OpenAI;
-using JaaS.Demos.Utility;
 using JaaS.Models;
-using Microsoft.CognitiveServices.Speech;
-using Microsoft.CognitiveServices.Speech.Audio;
-using System.Configuration;
-using System.Speech.Synthesis;
 
 namespace JaaS.Demos;
 
@@ -25,8 +20,8 @@ public class D6_ChatGpt
         {
             Messages =
             {
-                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences " +
-                "or less.")
+                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't `
+                    make things up and you reply with answers of 3 sentences or less.")
             },
             DeploymentName = _configuration.AzureOpenAiDeployment,
             Temperature = (float)0.5,
@@ -46,7 +41,7 @@ public class D6_ChatGpt
         _chatCompletionsOptions.Messages.Add(new ChatMessage(ChatRole.User, prompt));
 
         // Act
-        Response<ChatCompletions> responseWithoutStream = _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions).Result;
+        Response<ChatCompletions> responseWithoutStream = await _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions);
         ChatCompletions response = responseWithoutStream.Value;
         var responseText = response.Choices.FirstOrDefault().Message.Content;
 
