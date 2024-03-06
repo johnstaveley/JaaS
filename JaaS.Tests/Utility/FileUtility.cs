@@ -8,7 +8,7 @@ public static class FileUtility
     {
         var assembly = Assembly.GetExecutingAssembly();
         var stream = assembly.GetManifestResourceStream(resource);
-        Assert.IsNotNull(stream);
+        Assert.That(stream, Is.Not.Null);
         stream.Seek(0, SeekOrigin.Begin);
         return stream;
     }
@@ -16,7 +16,7 @@ public static class FileUtility
     {
         var assembly = Assembly.GetExecutingAssembly();
         var stream = assembly.GetManifestResourceStream(resource);
-        Assert.IsNotNull(stream);
+        Assert.That(stream, Is.Not.Null);
         stream.Seek(0, SeekOrigin.Begin);
         using (MemoryStream ms = new MemoryStream())
         {

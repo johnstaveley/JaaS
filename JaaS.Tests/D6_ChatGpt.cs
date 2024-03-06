@@ -38,8 +38,8 @@ public class D6_ChatGpt
     public async Task IntroduceYourself(string prompt, string expectedResponse)
     {
         // Arrange
-        Assert.IsNotNull(_openAiClient);
-        Assert.IsNotNull(_chatCompletionsOptions);
+        Assert.That(_openAiClient, Is.Not.Null);
+        Assert.That(_chatCompletionsOptions, Is.Not.Null);
         _chatCompletionsOptions.Messages.Add(new ChatMessage(ChatRole.User, prompt));
 
         // Act
@@ -48,6 +48,6 @@ public class D6_ChatGpt
         var responseText = response.Choices.First().Message.Content.ToLower();
 
         // Assert
-        Assert.IsTrue(responseText.Contains(expectedResponse));
+        Assert.That(responseText.Contains(expectedResponse), Is.True);
     }
 }

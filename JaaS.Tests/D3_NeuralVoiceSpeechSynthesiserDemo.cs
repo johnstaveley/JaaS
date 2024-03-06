@@ -21,6 +21,15 @@ public class D3_NeuralVoiceSpeechSynthesiserDemo
         _speechSynthesizerNeural = new SpeechSynthesizer(azureSpeechConfig);
     }
 
+    [TearDown]
+    public void Teardown()
+    {
+        if (_speechSynthesizerNeural != null)
+        {
+            _speechSynthesizerNeural.Dispose();
+        }
+    }
+
     [Test]
     [TestCase("Our speakers tonight are a round table of industry luminaries.")]
     [TestCase("We are currently looking for sponsors for the meetup, please contact us if you would like to sponsor")]
@@ -28,7 +37,7 @@ public class D3_NeuralVoiceSpeechSynthesiserDemo
     public async Task SayWithVoice(string speechText)
     {
         // Arrange
-        Assert.IsNotNull(_speechSynthesizerNeural);
+        Assert.That(_speechSynthesizerNeural, Is.Not.Null);
 
         // Act
         var speechSynthesisResult = await _speechSynthesizerNeural.SpeakTextAsync(speechText);

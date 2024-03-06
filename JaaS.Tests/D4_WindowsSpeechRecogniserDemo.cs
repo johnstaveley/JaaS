@@ -29,6 +29,15 @@ public class D4_WindowsSpeechRecogniserDemo
         _speechRecognizerWindows.RecognizeCompleted += WindowsRecognizeCompleted;
     }
 
+    [TearDown]
+    public void Teardown()
+    {
+        if (_speechRecognizerWindows != null)
+        {
+            _speechRecognizerWindows.Dispose();
+        }
+    }
+
     /// <summary>
     /// These demos illustrate the effect of the grammar on the recognition
     /// </summary>
@@ -38,7 +47,7 @@ public class D4_WindowsSpeechRecogniserDemo
     public async Task RecogniseVoice(string file, string expectedWord)
     {
         // Arrange
-        Assert.IsNotNull(_speechRecognizerWindows);
+        Assert.That(_speechRecognizerWindows, Is.Not.Null);
         var stream = FileUtility.LoadStreamFromEmbeddedResource($"JaaS.Demos.Resources.{file}.wav");
         _speechRecognizerWindows.SetInputToAudioStream(stream, new SpeechAudioFormatInfo(44100, AudioBitsPerSample.Sixteen, AudioChannel.Mono));
 

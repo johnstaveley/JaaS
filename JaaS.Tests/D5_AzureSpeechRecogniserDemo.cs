@@ -19,6 +19,15 @@ public class D5_AzureSpeechRecogniserDemo
         azureSpeechConfig.SpeechRecognitionLanguage = "en-GB";
     }
 
+    [TearDown]
+    public void Teardown()
+    {
+        if (_speechRecognizerAzure != null)
+        {
+            _speechRecognizerAzure.Dispose();
+        }
+    }
+
     [Test]
     [TestCase("Speakers", "speakers")]
     [TestCase("WhoAreTheSpeakers", "who are the speakers this week?")]
@@ -29,7 +38,7 @@ public class D5_AzureSpeechRecogniserDemo
         var audioInputStream = AudioInputStream.CreatePushStream(AudioStreamFormat.GetWaveFormatPCM(44100, 16, 1));
         audioInputStream.Write(bytes);
         _speechRecognizerAzure = new SpeechRecognizer(azureSpeechConfig, AudioConfig.FromStreamInput(audioInputStream));
-        Assert.IsNotNull(_speechRecognizerAzure);
+        Assert.That(_speechRecognizerAzure, Is.Not.Null);
         var response = "";
 
         // Act

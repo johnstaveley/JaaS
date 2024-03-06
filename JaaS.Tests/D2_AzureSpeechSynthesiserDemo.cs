@@ -17,6 +17,15 @@ public class D2_AzureSpeechSynthesiserDemo
         azureSpeechConfig.SpeechSynthesisLanguage = "en-GB";
     }
 
+    [TearDown]
+    public void Teardown()
+    {
+        if (_speechSynthesizerAzure != null)
+        {
+            _speechSynthesizerAzure.Dispose();
+        }
+    }
+
     [Test]
     [TestCase("Oliver", "Our speakers tonight are a round table of industry luminaries.")]
     [TestCase("Sonia", "We are currently looking for sponsors for the meetup, please contact us if you would like to sponsor")]
@@ -25,7 +34,7 @@ public class D2_AzureSpeechSynthesiserDemo
     {
         // Arrange
         ChooseVoice(chosenVoice);
-        Assert.IsNotNull(_speechSynthesizerAzure);
+        Assert.That(_speechSynthesizerAzure, Is.Not.Null);
 
         // Act
         await _speechSynthesizerAzure.SpeakTextAsync(speechText);
