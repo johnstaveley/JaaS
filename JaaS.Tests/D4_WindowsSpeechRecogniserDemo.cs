@@ -30,11 +30,8 @@ public class D4_WindowsSpeechRecogniserDemo
     }
 
     /// <summary>
-    /// These tests illustrate the effect of the grammar on the recognition
+    /// These demos illustrate the effect of the grammar on the recognition
     /// </summary>
-    /// <param name="file"></param>
-    /// <param name="expectedWord"></param>
-    /// <returns></returns>
     [Test]
     [TestCase("Speakers", "speakers")]
     [TestCase("WhoAreTheSpeakers", "who are the speakers this week?")]
