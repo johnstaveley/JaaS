@@ -154,7 +154,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("sponsor"))
         {
-            responseText = "We are currently looking for sponsors for the meetup, please contact us if you would like to sponsor JaaS";
+            responseText = "We are currently looking for sponsors for the meetup, please contact us if you would like to sponsor JarS";
         }
         else if (inputSpeech.Contains("speakers"))
         {
@@ -162,7 +162,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("next event"))
         {
-            responseText = "The next event is on the 6th of February. It will be on opportunities and proven implementations of IoT in the Public Sector by Scott Andrews. Sign up as usual on meetup";
+            responseText = "The next event is on the 6th of April. It will be on opportunities and proven implementations of IoT in the Public Sector by Scott Andrews. Sign up as usual on meetup";
         }
         else if (inputSpeech == "open the pod bay doors")
         {
@@ -170,7 +170,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("news"))
         {
-            responseText = "Today the design for the Z S Watch was finalised, an open source smart watch running Zephyr R TOS";
+            responseText = "There is always lots of news in the data science world. It moves faster than a gerbil on a treadmill.";
         }
         else if (inputSpeech.Contains("wrap up"))
         {
@@ -261,8 +261,7 @@ public class MainViewModel : ViewModelBase
         {
             Messages =
             {
-                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences " +
-                "or less.")
+                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences or less. JaaS stands for John as a Service. The event is sponsored by a recuitment agency")
             },
             DeploymentName = _configuration.AzureOpenAiDeployment,
             Temperature = (float)0.5,
