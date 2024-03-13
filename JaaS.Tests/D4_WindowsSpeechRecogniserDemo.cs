@@ -43,7 +43,7 @@ public class D4_WindowsSpeechRecogniserDemo
     /// </summary>
     [Test]
     [TestCase("Speakers", "speakers")]
-    [TestCase("WhoAreTheSpeakers", "who are the speakers this week?", Description = "This one won't work without changes to the grammar")]
+    [TestCase("WhoAreTheSpeakers", "who are the speakers this week", Description = "This one won't work without changes to the grammar")]
     public async Task RecogniseVoice(string file, string expectedWord)
     {
         // Arrange
