@@ -33,7 +33,9 @@ public class D3_NeuralVoiceSpeechSynthesiserDemo
     [Test]
     [TestCase("Our speakers tonight are a round table of industry luminaries.")]
     [TestCase("We are currently looking for sponsors for the meetup, please contact us if you would like to sponsor")]
-    [TestCase("We talk all about things .Net related")]
+    [TestCase("We talk about all things .Net related")]
+    [TestCase("My password is my voice, authorise me")]
+    [TestCase("She sells sea shells on the sea shore")]
     public async Task SayWithVoice(string speechText)
     {
         // Arrange
