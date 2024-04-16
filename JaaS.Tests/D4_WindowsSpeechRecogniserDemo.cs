@@ -20,8 +20,8 @@ public class D4_WindowsSpeechRecogniserDemo
         _speechRecognizerWindows.SetInputToDefaultAudioDevice();
         GrammarBuilder builder = new GrammarBuilder();
         builder.Culture = _speechRecognizerWindows.RecognizerInfo.Culture;
-        builder.Append("speakers");
-        //builder.Append("who are the speakers this week");
+        //builder.Append("speakers");
+        builder.Append("who are the speakers this week");
         var grammar = new Grammar(builder);
         _speechRecognizerWindows.LoadGrammar(grammar);
         _speechRecognizerWindows.BabbleTimeout = TimeSpan.FromSeconds(3);
