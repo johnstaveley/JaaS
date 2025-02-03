@@ -1,51 +1,44 @@
 using Azure;
 using Azure.AI.OpenAI;
 using JaaS.Models;
+using OpenAI;
+using OpenAI.Chat;
 
 namespace JaaS.Demos;
 
 public class D6_ChatGpt
 {
     private AppConfiguration _configuration;
-    private OpenAIClient? _openAiClient;
-    private ChatCompletionsOptions? _chatCompletionsOptions;
+    private AzureOpenAIClient? _openAiClient;
+    private ChatClient _chatClient;
 
 
     [SetUp]
     public void Setup()
     {
         _configuration = new AppConfiguration();
-        _openAiClient = new OpenAIClient(new Uri(_configuration.AzureOpenAiUrl), new AzureKeyCredential(_configuration.AzureOpenAiKey));
-        _chatCompletionsOptions = new ChatCompletionsOptions()
-        {
-            Messages =
-            {
-                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't `
-                    make things up and you reply with answers of 3 sentences or less.")
-            },
-            DeploymentName = _configuration.AzureOpenAiDeployment,
-            Temperature = 0.5F,
-            MaxTokens = 800,
-            NucleusSamplingFactor = 0.95F,
-            FrequencyPenalty = 0,
-            PresencePenalty = 0,
-        };
+        _openAiClient = new AzureOpenAIClient(new Uri(_configuration.AzureOpenAiUrl), new AzureKeyCredential(_configuration.AzureOpenAiKey));
+        _chatClient = _openAiClient.GetChatClient(_configuration.AzureOpenAiDeployment);
     }
 
     [Test]
     [TestCase("What is your name?", "my name is jaas")]
-    [TestCase("What is the latest version of .net?", ".net 5")]
+    [TestCase("What is the latest version of .net?", ".net 7")]
     public async Task IntroduceYourself(string prompt, string expectedResponse)
     {
         // Arrange
         Assert.That(_openAiClient, Is.Not.Null);
-        Assert.That(_chatCompletionsOptions, Is.Not.Null);
-        _chatCompletionsOptions.Messages.Add(new ChatMessage(ChatRole.User, prompt));
+        Assert.That(_chatClient, Is.Not.Null);
 
         // Act
-        Response<ChatCompletions> responseWithoutStream = await _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions);
-        ChatCompletions response = responseWithoutStream.Value;
-        var responseText = response.Choices.First().Message.Content.ToLower();
+        var response = await _chatClient.CompleteChatAsync(
+            [
+            new SystemChatMessage(@"You are an AI assistant that helps people find information. Your name is JaaS which stands for John as a service. You don't `
+                    make things up and you reply with answers of 3 sentences or less."),
+            new UserChatMessage(prompt)
+            ]
+            );
+        var responseText = response.Value.Content.First().Text.ToLower();
 
         // Assert
         Assert.That(responseText.Contains(expectedResponse), Is.True);

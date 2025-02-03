@@ -3,6 +3,7 @@ using Azure.AI.OpenAI;
 using JaaS.Models;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
+using OpenAI.Chat;
 using System;
 using System.Linq;
 using System.Speech.Recognition;
@@ -12,8 +13,8 @@ namespace JaaS;
 public class MainViewModel : ViewModelBase
 {
     private AppConfiguration _configuration;
-    private OpenAIClient? _openAiClient;
-    private ChatCompletionsOptions? _chatCompletionsOptions;
+    private AzureOpenAIClient? _openAiClient;
+    private ChatClient _chatClient;
     private Microsoft.CognitiveServices.Speech.SpeechRecognizer? _speechRecognizerAzure;
     private SpeechRecognitionEngine? _speechRecognizerWindows;
     private System.Speech.Synthesis.SpeechSynthesizer? _speechSynthesizerWindows;
@@ -35,7 +36,7 @@ public class MainViewModel : ViewModelBase
         _configuration = configuration;
         if (configuration.UseOpenAi)
         {
-            _openAiClient = new OpenAIClient(new Uri(configuration.AzureOpenAiUrl), new AzureKeyCredential(configuration.AzureOpenAiKey));
+            _openAiClient = new AzureOpenAIClient(new Uri(configuration.AzureOpenAiUrl), new AzureKeyCredential(configuration.AzureOpenAiKey));
             InitialiseChatGpt();
         }
         SpeechConfig azureSpeechConfig = null;
@@ -176,14 +177,14 @@ public class MainViewModel : ViewModelBase
         {
             responseText = "Please speak to the human if you would like to do a talk in the future, meanwhile I will be continuing my quest for world domination.";
         }
-        else if (_openAiClient != null && _chatCompletionsOptions != null)
+        else if (_openAiClient != null && _chatClient != null)
         {
-            _chatCompletionsOptions.Messages.Add(new ChatMessage(ChatRole.User, originalInput));
-            Response<ChatCompletions> responseWithoutStream = _openAiClient.GetChatCompletionsAsync(_chatCompletionsOptions).Result;
-            ChatCompletions response = responseWithoutStream.Value;
-            var responseMessage = new ChatMessage(ChatRole.System, response.Choices.FirstOrDefault().Message.Content);
-            _chatCompletionsOptions.Messages.Add(responseMessage);
-            responseText = response.Choices.FirstOrDefault().Message.Content;
+            var completionUpdates = _chatClient.CompleteChat(
+                [
+                new SystemChatMessage(@"You are an AI assistant that helps people find information. Your name is JaaS which stands for John as a service. You don't make things up and you reply with answers of 3 sentences or less. JaaS stands for John as a Service. The event is sponsored by a recruitment agency"),
+                new UserChatMessage(originalInput)
+                ]);
+            responseText = completionUpdates.Value.Content.FirstOrDefault()?.Text ?? "No response";
         }
         else
         {
@@ -257,18 +258,18 @@ public class MainViewModel : ViewModelBase
     }
     private void InitialiseChatGpt()
     {
-        _chatCompletionsOptions = new ChatCompletionsOptions()
+        _chatClient = _openAiClient.GetChatClient(_configuration.AzureOpenAiDeployment);
+/*        _chatCompletion = new ChatCompletionsOptions()
         {
             Messages =
             {
-                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS. You don't make things up and you reply with answers of 3 sentences or less. JaaS stands for John as a Service. The event is sponsored by a recuitment agency")
+                new ChatMessage(ChatRole.System, @"You are an AI assistant that helps people find information. Your name is JaaS which stands for John as a service. You don't make things up and you reply with answers of 3 sentences or less. JaaS stands for John as a Service. The event is sponsored by a recruitment agency")
             },
-            DeploymentName = _configuration.AzureOpenAiDeployment,
             Temperature = (float)0.5,
             MaxTokens = 800,
             NucleusSamplingFactor = (float)0.95,
             FrequencyPenalty = 0,
             PresencePenalty = 0,
-        };
+        };*/
     }
 }
