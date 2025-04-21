@@ -23,7 +23,7 @@ public class D6_ChatGpt
 
     [Test]
     [TestCase("What is your name?", "my name is jaas")]
-    [TestCase("What is the latest version of .net?", ".net 7")]
+    [TestCase("What is the latest version of .net?", ".net 8")]
     public async Task IntroduceYourself(string prompt, string expectedResponse)
     {
         // Arrange
