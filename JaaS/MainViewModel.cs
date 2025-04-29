@@ -163,7 +163,7 @@ public class MainViewModel : ViewModelBase
         }
         else if (inputSpeech.Contains("next event"))
         {
-            responseText = "The next event is on the 6th of April. It will be on opportunities and proven implementations of IoT in the Public Sector by Scott Andrews. Sign up as usual on meetup";
+            responseText = "The next event is on the 6th of May. It will be on opportunities and proven implementations of IoT in the Public Sector by Scott Andrews. Sign up as usual on meetup";
         }
         else if (inputSpeech == "open the pod bay doors")
         {

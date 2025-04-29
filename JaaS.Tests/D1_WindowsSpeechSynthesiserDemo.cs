@@ -25,7 +25,7 @@ public class D1_WindowsSpeechSynthesiserDemo
 
     [Test]
     [TestCase("David", "Hello and welcome to Leeds Sharp")]
-    [TestCase("Hazel", "Hello and welcome to I O T North")]
+    [TestCase("Hazel", "Hello and welcome to the A I O T Hub")]
     [TestCase("Zira", "Hello and welcome to Leeds Data Science meet up")]
     public void SayWithVoice(string chosenVoice, string speechText)
     {
