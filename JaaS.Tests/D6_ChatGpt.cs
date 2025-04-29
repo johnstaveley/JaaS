@@ -41,6 +41,6 @@ public class D6_ChatGpt
         var responseText = response.Value.Content.First().Text.ToLower();
 
         // Assert
-        Assert.That(responseText.Contains(expectedResponse), Is.True);
+        Assert.That(responseText.Contains(expectedResponse), Is.True, responseText);
     }
 }
